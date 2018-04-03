@@ -2,7 +2,7 @@ import { Shogi, Piece, Color, IMove } from "./Shogi.js/src/shogi";
 import { IMovePromote } from "./board_converter";
 
 
-const pieceKindKifuName = {
+export const PieceKindKifuName = {
     "FU": "歩",
     "KY": "香",
     "KE": "桂",
@@ -19,8 +19,8 @@ const pieceKindKifuName = {
     "RY": "竜",
 };
 
-const zenkakusuji = "０１２３４５６７８９";
-const kansuji = "〇一二三四五六七八九";
+export const Zenkakusuji = "０１２３４５６７８９";
+export const Kansuji = "〇一二三四五六七八九";
 
 export class KifuTool {
     public static GetMoveString(pos: Shogi, move: IMovePromote, last_move?: IMovePromote) {
@@ -28,10 +28,10 @@ export class KifuTool {
         if (!kind) {
             kind = pos.get(move.from.x, move.from.y).kind;
         }
-        let str = `${zenkakusuji[move.to.x]}${kansuji[move.to.y]}`;
+        let str = `${Zenkakusuji[move.to.x]}${Kansuji[move.to.y]}`;
         if (move.kind) {
             // 打ち
-            str += pieceKindKifuName[kind];
+            str += PieceKindKifuName[kind];
             str += "打";
         } else {
             // 移動
@@ -40,7 +40,7 @@ export class KifuTool {
                     str += "同";
                 }
             }
-            str += pieceKindKifuName[kind];
+            str += PieceKindKifuName[kind];
             if (move.promote) {
                 str += "成";
             }
