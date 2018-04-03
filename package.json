@@ -1,0 +1,28 @@
+{
+  "name": "neneshogi_mini",
+  "version": "1.0.0",
+  "description": "Demonstration of policy network for shogi",
+  "main": "index.js",
+  "dependencies": {
+    "http-server": "^0.11.1",
+    "ts-loader": "^4.1.0",
+    "typescript": "^2.8.1",
+    "webpack": "^4.4.1",
+    "webpack-cli": "^2.0.13"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/select766/neneshogi_mini.git"
+  },
+  "author": "select766",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/select766/neneshogi_mini/issues"
+  },
+  "homepage": "https://github.com/select766/neneshogi_mini#readme"
+}

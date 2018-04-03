@@ -6,6 +6,7 @@ Webブラウザ上で動作する、Deep Learningによる将棋方策モデル�
 ```
 git submodule init
 git submodule update
+npm install
 ```
 
 ## DNNモデルの変換を行う場合
@@ -32,3 +33,8 @@ python3 model_convert.py
 
 出力先: `public/webdnn_model`
 
+# Webページのビルド
+
+```
+npm run build
+```

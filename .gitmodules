@@ -1,3 +1,6 @@
 [submodule "model_convert/eigen"]
 	path = model_convert/eigen
 	url = https://github.com/eigenteam/eigen-git-mirror
+[submodule "src/Shogi.js"]
+	path = src/Shogi.js
+	url = https://github.com/select766/Shogi.js
