@@ -3,6 +3,7 @@ import { Think } from "./think";
 import { KifuTool } from "./kifu_tool";
 import { Game } from "./game";
 let think = new Think();
+think.softmax_temperature = 1.0;
 think.load();
 
 let game = new Game();
