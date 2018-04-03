@@ -1,0 +1,3 @@
+[submodule "model_convert/eigen"]
+	path = model_convert/eigen
+	url = https://github.com/eigenteam/eigen-git-mirror
