@@ -17,7 +17,14 @@ export class Think {
         console.log('model loaded');
     }
 
-    async do_think(pos: Shogi) {
+    async do_think(pos: Shogi): Promise<IMovePromote> {
+        let moves = BoardConverter.GetLegalMoves(pos);
+        console.log(`${moves.length} legal moves`);
+
+        if (moves.length === 0) {
+            return null;
+        }
+
         let input_array = BoardConverter.MakeInput(pos);
         this.input_view.set(input_array);
         console.log("Running model");
@@ -25,15 +32,22 @@ export class Think {
         let value = this.output_value_view.toActual()[0];
         console.log(`Value ${value}`);
         let policy = this.output_policy_view.toActual();
-        let moves = BoardConverter.GetLegalMoves(pos);
-        console.log(`${moves.length} legal moves`);
+
         let scores = [];
+        let best_move;
+        let best_score = -Infinity;
         for (let i = 0; i < moves.length; i++) {
             let move = moves[i];
             let mi = BoardConverter.GetMoveIndex(move, pos.turn);
             let score = policy[mi];
             scores.push(score);
             console.log(`${KifuTool.GetMoveString(pos, move)}, score ${score}`);
+            if (score > best_score) {
+                best_score = score;
+                best_move = move;
+            }
         }
+
+        return best_move;
     }
 }
