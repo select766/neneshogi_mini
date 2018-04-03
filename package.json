@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "http-server": "^0.11.1",
+    "ndarray": "^1.0.18",
     "ts-loader": "^4.1.0",
     "typescript": "^2.8.1",
     "webdnn": "^1.2.2",
