@@ -10,8 +10,13 @@ git submodule update
 
 ## DNNモデルの変換を行う場合
 - python3.6以降のインストール (Anaconda等)
-- webdnnのインストール (`pip install webdnn`)
+- 依存pythonパッケージのインストール (requirements.txt)
 - [emscriptenのセットアップ](http://kripken.github.io/emscripten-site/docs/getting_started/downloads.html)
+
+webdnn等のパッケージインストール
+```
+pip install -r requirements.txt
+```
 
 シェルを立ち上げるごとに、emscriptenをインストールしたディレクトリで
 ```
