@@ -1,5 +1,6 @@
 import { Shogi } from "./Shogi.js/src/shogi";
 import { BoardConverter, IMovePromote } from "./board_converter";
+import { KifuTool } from "./kifu_tool";
 import { load, DescriptorRunner } from "webdnn";
 import SymbolicFloat32Array from "webdnn/symbolic_typed_array/symbolic_float32array";
 
@@ -32,7 +33,7 @@ export class Think {
             let mi = BoardConverter.GetMoveIndex(move, pos.turn);
             let score = policy[mi];
             scores.push(score);
-            console.log(`to: ${move.to.x} ${move.to.y}, score ${score}`);
+            console.log(`${KifuTool.GetMoveString(pos, move)}, score ${score}`);
         }
     }
 }
