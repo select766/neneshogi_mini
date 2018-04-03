@@ -122,7 +122,7 @@ export class BoardConverter {
                         // 駒が成れるか、成らずに動けるかを決定
                         let promote = to_rank <= 3;
                         let non_promote = true;
-                        switch (move.kind) {
+                        switch (pos.get(move.from.x, move.from.y).kind) {
                             case "FU":
                             case "KY":
                                 non_promote = to_rank >= 2;
