@@ -105,7 +105,36 @@ export class BoardConverter {
 
     public static GetLegalMoves(pos: Shogi): IMovePromote[] {
         // 合法手を列挙
-        // TODO: 王手放置禁止
+        let check_legal_move = (m: IMovePromote) => {
+            // 駒を動かしてみて、王手かどうかチェック
+            let capture = pos.get(m.to.x, m.to.y);
+            let capture_kind = capture ? capture.kind : null;
+            pos.move(m.from.x, m.from.y, m.to.x, m.to.y, m.promote);
+            // 手番でない側が王手されていたら、王手放置
+            let isCheck = pos.isCheck(pos.turn === Color.Black ? Color.White : Color.Black);
+            pos.unmove(m.from.x, m.from.y, m.to.x, m.to.y, m.promote, capture_kind);
+            return !isCheck;
+        }
+
+        let check_legal_drop = (m: IMovePromote) => {
+            // 駒を打ってみて、王手かどうかチェック
+            pos.drop(m.to.x, m.to.y, m.kind);
+            // 手番でない側が王手されていたら、王手放置
+            let isCheck = pos.isCheck(pos.turn === Color.Black ? Color.White : Color.Black);
+            let mate_by_pawn_drop = false;
+            if (!isCheck && pos.isCheck()) {
+                // 手番側が王手された
+                if (m.kind === "FU") {
+                    // 打ち歩詰め
+                    // 再帰的に指し手を生成してみて、詰んでいるかチェック
+                    if (BoardConverter.GetLegalMoves(pos).length === 0) {
+                        mate_by_pawn_drop = true;
+                    }
+                }
+            }
+            pos.undrop(m.to.x, m.to.y);
+            return !isCheck && !mate_by_pawn_drop;
+        }
 
         let moves: IMovePromote[] = [];
         for (let x = 1; x <= 9; x++) {
@@ -141,18 +170,29 @@ export class BoardConverter {
                         }
 
                         if (promote) {
-                            moves.push({ from: move.from, to: move.to, promote: true });
+                            let m = { from: move.from, to: move.to, promote: true };
+                            if (check_legal_move(m)) {
+                                moves.push(m);
+                            }
                         }
                         if (non_promote) {
-                            moves.push({ from: move.from, to: move.to, promote: false });
+                            let m = { from: move.from, to: move.to, promote: false };
+                            if (check_legal_move(m)) {
+                                moves.push(m);
+                            }
                         }
-                    })
+                    });
                 }
             }
         }
 
         let piece_drops = pos.getDropsBy(pos.turn);
-        Array.prototype.push.apply(moves, piece_drops);//末端にArrayを追加
+        piece_drops.forEach((move) => {
+            let m: IMovePromote = move;
+            if (check_legal_drop(m)) {
+                moves.push(m);
+            }
+        });
 
         return moves;
     }

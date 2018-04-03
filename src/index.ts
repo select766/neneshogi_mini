@@ -23,6 +23,7 @@ async function next() {
         }
     }
     console.log(pos.toCSAString());
+    console.log(`Check: ${pos.isCheck()}`);
 }
 
 window.onload = () => {
