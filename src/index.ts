@@ -20,41 +20,46 @@ async function step() {
     }
     in_step = true;
 
-    let msg = "";
-    if (game_end) {
-        // 初期局面を設定
-        game = new Game();
-        msg = "対局開始前";
-        game_end = false;
-    } else {
-        if (game.game_ply > 256) {
-            msg = "256手により引き分け";
-            game_end = true;
+    try {
+        let msg = "";
+        if (game_end) {
+            // 初期局面を設定
+            game = new Game();
+            msg = "対局開始前";
+            game_end = false;
         } else {
-            let best_move = await think.do_think(game.pos);
-            if (!best_move) {
-                console.log("Mated");
-                msg = "投了";
+            if (game.game_ply > 256) {
+                msg = "256手により引き分け";
                 game_end = true;
             } else {
-                let move_str = game.GetMoveString(best_move, true);
-                console.log(`Move: ${move_str}`);
-                msg = `${game.game_ply} ${move_str}`;
-                game.MoveOrDrop(best_move);
+                let best_move = await think.do_think(game.pos);
+                if (!best_move) {
+                    console.log("Mated");
+                    msg = "投了";
+                    game_end = true;
+                } else {
+                    let move_str = game.GetMoveString(best_move, true);
+                    console.log(`Move: ${move_str}`);
+                    msg = `${game.game_ply} ${move_str}`;
+                    game.MoveOrDrop(best_move);
+                }
             }
         }
-    }
-    document.getElementById("last_move").innerText = msg;
-    console.log(game.pos.toCSAString());
-    console.log(`Check: ${game.pos.isCheck()}`);
-    updateBoard(game);
+        document.getElementById("last_move").innerText = msg;
+        console.log(game.pos.toCSAString());
+        console.log(`Check: ${game.pos.isCheck()}`);
+        updateBoard(game);
 
-    if (game_end) {
-        if (!(<HTMLInputElement>document.getElementById("continuous_game")).checked) {
-            // 連続対局しない
-            console.log("Pause by game end");
-            togglePause();
+        if (game_end) {
+            if (!(<HTMLInputElement>document.getElementById("continuous_game")).checked) {
+                // 連続対局しない
+                console.log("Pause by game end");
+                togglePause();
+            }
         }
+    } catch (e) {
+        alert("Error: " + JSON.stringify(e.message));
+        togglePause();
     }
 
     in_step = false;
@@ -153,7 +158,12 @@ async function init() {
     document.getElementById("last_move").innerText = "モデルロード中";
     initBoard();
     updateBoard(new Game()); //ダミーの初期配置表示
-    await think.load();
+    try {
+        await think.load();
+    } catch (e) {
+        document.getElementById("last_move").innerText = "モデルロード失敗: " + JSON.stringify(e);
+        return;
+    }
     document.getElementById("pause").onclick = togglePause;
     setImmediate(step);
     interval_timer = setInterval(step, step_interval);
