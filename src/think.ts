@@ -15,8 +15,8 @@ export class Think {
         this.softmax_temperature = 0;
     }
 
-    async load() {
-        this.model = await load("./webdnn_model", { "backendOrder": "webassembly" });
+    async load(model_name: string) {
+        this.model = await load(`./webdnn_model/${model_name}`, { "backendOrder": "webassembly" });
         [this.input_view] = this.model.getInputViews();
         [this.output_policy_view, this.output_value_view] = this.model.getOutputViews();
         console.log('model loaded');

@@ -2,6 +2,7 @@ import { Shogi, Color } from "./Shogi.js/src/shogi";
 import { Think } from "./think";
 import { KifuTool, Zenkakusuji, Kansuji, PieceKindKifuName, PieceKindBoardName } from "./kifu_tool";
 import { Game } from "./game";
+import { models } from "./models";
 let think = new Think();
 think.softmax_temperature = 1.0;
 
@@ -154,12 +155,48 @@ function togglePause() {
     pause = !pause;
 }
 
+function initModelsSelect(selected_value: string) {
+    let select: HTMLSelectElement = <HTMLSelectElement>document.getElementById("models");
+    models.forEach((m) => {
+        let option = document.createElement("option");
+        option.value = m.name;
+        if (m.name === selected_value) {
+            option.selected = true;
+        }
+        option.innerText = m.description;
+        select.appendChild(option);
+    });
+
+    select.onchange = () => {
+        let selected_name = models[select.selectedIndex].name;
+        let url = `${window.location.origin}${window.location.pathname}?model=${selected_name}`
+        window.location.href = url;
+    };
+}
+
+function getSelectedModelName() {
+    // xxx.html?model=yyy
+    let kv = window.location.search.slice(1).split('&');
+    for (let i = 0; i < kv.length; i++) {
+        let [k, v] = kv[i].split('=', 2);
+        if (k === "model") {
+            return v;
+        }
+    }
+
+    return models[0].name;//default
+}
+
 async function init() {
+    let model_name = getSelectedModelName();
+    console.log(`model name: ${model_name}`);
+    initModelsSelect(model_name);
+
     document.getElementById("last_move").innerText = "モデルロード中";
     initBoard();
     updateBoard(new Game()); //ダミーの初期配置表示
     try {
-        await think.load();
+        await think.load(model_name);
     } catch (e) {
         document.getElementById("last_move").innerText = "モデルロード失敗: " + JSON.stringify(e);
         return;
