@@ -49,7 +49,7 @@ def main():
         model = load_model(model_config)
         graph = get_graph(model)
         exec_info = generate_descriptor("webassembly", graph, constant_encoder_name="eightbit")
-        output_dir = f"../public/webdnn_model/{model_config['name']}"
+        output_dir = f"../docs/webdnn_model/{model_config['name']}"
         exec_info.save(output_dir)
         data_size = os.path.getsize(f"{output_dir}/weight_webassembly.bin") + 65536  # 重み以外の関連ファイルサイズ加算
 
