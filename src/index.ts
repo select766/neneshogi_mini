@@ -33,7 +33,7 @@ async function step() {
                 msg = "256手により引き分け";
                 game_end = true;
             } else {
-                let best_move = await think.do_think(game.pos);
+                let best_move = await think.do_think(game);
                 if (!best_move) {
                     console.log("Mated");
                     msg = "投了";

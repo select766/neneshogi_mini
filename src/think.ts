@@ -3,6 +3,7 @@ import { BoardConverter, IMovePromote } from "./board_converter";
 import { KifuTool } from "./kifu_tool";
 import { load, DescriptorRunner } from "webdnn";
 import SymbolicFloat32Array from "webdnn/symbolic_typed_array/symbolic_float32array";
+import { Game } from "./game";
 
 export class Think {
     private model: DescriptorRunner
@@ -23,7 +24,8 @@ export class Think {
         console.log('model loaded');
     }
 
-    async do_think(pos: Shogi): Promise<IMovePromote> {
+    async do_think(game: Game): Promise<IMovePromote> {
+        let pos = game.pos;
         let moves = BoardConverter.GetLegalMoves(pos);
         console.log(`${moves.length} legal moves`);
 
@@ -31,7 +33,7 @@ export class Think {
             return null;
         }
 
-        let input_array = BoardConverter.MakeInput(pos);
+        let input_array = BoardConverter.MakeInput(pos, game.game_ply);
         this.input_view.set(input_array);
         console.log("Running model");
         await this.model.run();

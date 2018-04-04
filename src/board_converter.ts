@@ -52,7 +52,7 @@ function inverseSquareObject(obj: { x: number, y: number }) {
 }
 
 export class BoardConverter {
-    public static MakeInput(pos: Shogi): Float32Array {
+    public static MakeInput(pos: Shogi, gamePly: number): Float32Array {
         let raw_array = new Float32Array(dnn_input_channel * 9 * 9);
         let array = ndarray(raw_array, [dnn_input_channel, 9, 9]);
 
@@ -99,7 +99,9 @@ export class BoardConverter {
             fillChannels(array, channel_offset, channel_offset + name_count["KI"], 1);
             channel_offset += 4;
         }
-        // TODO: 王手・手数チャンネル
+
+        fillChannel(array, channel_offset++, pos.isCheck() ? 1 : 0);//王手
+        fillChannel(array, channel_offset++, gamePly / 256);//手数
         return raw_array;
     }
 
