@@ -4,7 +4,7 @@ import { KifuTool, Zenkakusuji, Kansuji, PieceKindKifuName, PieceKindBoardName }
 import { Game } from "./game";
 import { models } from "./models";
 let think = new Think();
-think.softmax_temperature = 1.0;
+think.softmax_temperature = 0.5;//ある程度ばらけさせつつ変な手を指しすぎないような調整が必要
 
 let board_cells;
 let hand_cells;
