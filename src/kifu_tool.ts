@@ -19,6 +19,23 @@ export const PieceKindKifuName = {
     "RY": "竜",
 };
 
+export const PieceKindBoardName = {
+    "FU": "歩",
+    "KY": "香",
+    "KE": "桂",
+    "GI": "銀",
+    "KA": "角",
+    "HI": "飛",
+    "KI": "金",
+    "OU": "玉",
+    "TO": "と",
+    "NY": "杏",
+    "NK": "圭",
+    "NG": "全",
+    "UM": "馬",
+    "RY": "竜",
+};
+
 export const Zenkakusuji = "０１２３４５６７８９";
 export const Kansuji = "〇一二三四五六七八九";
 

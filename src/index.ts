@@ -1,6 +1,6 @@
 import { Shogi, Color } from "./Shogi.js/src/shogi";
 import { Think } from "./think";
-import { KifuTool, Zenkakusuji, Kansuji, PieceKindKifuName } from "./kifu_tool";
+import { KifuTool, Zenkakusuji, Kansuji, PieceKindKifuName, PieceKindBoardName } from "./kifu_tool";
 import { Game } from "./game";
 let think = new Think();
 think.softmax_temperature = 1.0;
@@ -11,12 +11,17 @@ let hand_cells;
 let game = new Game();
 async function next() {
     let best_move = await think.do_think(game.pos);
+    let msg = "";
     if (!best_move) {
         console.log("Mated");
+        msg = "投了";
     } else {
-        console.log(`Move: ${game.GetMoveString(best_move, true)}`);
+        let move_str = game.GetMoveString(best_move, true);
+        console.log(`Move: ${move_str}`);
+        msg = `${game.game_ply} ${move_str}`;
         game.MoveOrDrop(best_move);
     }
+    document.getElementById("last_move").innerText = msg;
     console.log(game.pos.toCSAString());
     console.log(`Check: ${game.pos.isCheck()}`);
     updateBoard(game);
@@ -32,15 +37,17 @@ function initBoard() {
         for (let x = 9; x >= 0; x--) {
             // 右端がx==1
             let td = document.createElement("td");
+            let span = document.createElement("span");
             if (y === 0) {
                 if (x !== 0) {
-                    td.innerText = Zenkakusuji[x];
+                    span.innerText = Zenkakusuji[x];
                 }
             } else if (x === 0) {
-                td.innerText = Kansuji[y];
+                span.innerText = Kansuji[y];
             } else {
-                board_cells[y][x] = td;
+                board_cells[y][x] = span;
             }
+            td.appendChild(span);
             tr.appendChild(td);
         }
     }
@@ -54,15 +61,24 @@ function updateBoard(game: Game) {
     for (let y = 1; y <= 9; y++) {
         for (let x = 1; x <= 9; x++) {
             let piece = game.pos.get(x, y);
-            let str = "";
+            let str = "　";
+            let style_class = "piece";
             if (piece != null) {
-                str = PieceKindKifuName[piece.kind];
-                if (piece.color == Color.White) {
-                    str = "v" + str;
+                str = PieceKindBoardName[piece.kind];
+                if (piece.color === Color.White) {
+                    style_class += " white";//180度回転
+                }
+
+                if (game.last_move) {
+                    if (game.last_move.to.x === x && game.last_move.to.y === y) {
+                        style_class += " last_move";
+                    }
                 }
             }
 
-            board_cells[y][x].innerText = str;
+            let span = board_cells[y][x];
+            span.className = style_class;
+            span.innerText = str;
         }
     }
 

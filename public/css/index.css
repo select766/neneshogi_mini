@@ -1,0 +1,13 @@
+span.piece {
+    display: block;
+}
+
+span.white {
+    -moz-transform: rotate(180deg);
+    -webkit-transform: rotate(180deg);
+    transform: rotate(180deg);
+}
+
+span.last_move {
+    background-color: yellow;
+}
