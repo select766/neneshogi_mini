@@ -192,13 +192,16 @@ async function init() {
     console.log(`model name: ${model_name}`);
     initModelsSelect(model_name);
 
-    document.getElementById("last_move").innerText = "モデルロード中";
+    let msg_element = document.getElementById("last_move");
+    msg_element.innerText = "モデルロード中";
     initBoard();
     updateBoard(new Game()); //ダミーの初期配置表示
     try {
-        await think.load(model_name);
+        await think.load(model_name, (loaded, total) => {
+            msg_element.innerText = `モデルロード中 ${(loaded / total * 100).toFixed(1)}%`;
+        });
     } catch (e) {
-        document.getElementById("last_move").innerText = "モデルロード失敗: " + JSON.stringify(e);
+        msg_element.innerText = "モデルロード失敗: " + JSON.stringify(e);
         return;
     }
     document.getElementById("pause").onclick = togglePause;

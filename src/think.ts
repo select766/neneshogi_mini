@@ -15,8 +15,9 @@ export class Think {
         this.softmax_temperature = 0;
     }
 
-    async load(model_name: string) {
-        this.model = await load(`./webdnn_model/${model_name}`, { "backendOrder": "webassembly" });
+    async load(model_name: string, progressCallback) {
+        this.model = await load(`./webdnn_model/${model_name}`,
+            { backendOrder: "webassembly", progressCallback: progressCallback });
         [this.input_view] = this.model.getInputViews();
         [this.output_policy_view, this.output_value_view] = this.model.getOutputViews();
         console.log('model loaded');
@@ -47,7 +48,7 @@ export class Think {
             console.log(`${KifuTool.GetMoveString(pos, move)}, score ${score}`);
         }
 
-        let {probabilities, index} = this.softmaxSampling(scores);
+        let { probabilities, index } = this.softmaxSampling(scores);
         let best_move = moves[index];
         console.log(`${KifuTool.GetMoveString(pos, best_move)} ${probabilities[index] * 100 | 0}%`)
 
