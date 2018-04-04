@@ -2,11 +2,13 @@
 <html>
     <head>
         <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
         <title>ねね将棋mini</title>
         <link rel="stylesheet" type="text/css" href="css/index.css">
         <script src="js/bundle.js"></script>
     </head>
     <body>
+        <div>ねね将棋mini</div>
         <div id="last_move"></div>
         <table id="board"></table>
         <table id="hand">
@@ -16,6 +18,17 @@
         <div>
             <button type="button" id="pause">一時停止</button>
             <label><input type="checkbox" id="continuous_game">連続対局</label>
+        </div>
+        <div>
+            ねね将棋miniとは：<br>
+            ディープラーニングの「直観」を示すデモです。<br>
+            ディープラーニングで学習された方策モデルにより、探索なしで指します(本来はMCTS等の探索と組み合わせます)。<br>
+            <a href="https://mil-tokyo.github.io/webdnn/ja/">WebDNNフレームワーク</a>により、サーバから棋譜を受信するのではなく端末内で指し手を計算しています。<br>
+            千日手判定がない等、実装が完全でないところがありますがご容赦ください。<br>
+        </div>
+        <hr>
+        <div>
+            Author: select766 <a href="https://github.com/select766/neneshogi_mini">Github</a>
         </div>
     </body>
 </html>

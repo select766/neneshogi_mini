@@ -11,3 +11,13 @@ span.white {
 span.last_move {
     background-color: yellow;
 }
+
+table#board {
+    background-color: burlywood;
+    border: black 1px solid;
+    border-collapse: collapse;
+}
+
+table#board td {
+    border: black 1px solid;
+}
