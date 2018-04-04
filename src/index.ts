@@ -8,23 +8,50 @@ think.load();
 
 let board_cells;
 let hand_cells;
-let game = new Game();
-async function next() {
-    let best_move = await think.do_think(game.pos);
+let game: Game;
+let in_step: boolean = false;
+let game_end = true;
+async function step() {
+    if (in_step) {
+        console.warn("called step while performing last step");
+        return;
+    }
+    in_step = true;
+
     let msg = "";
-    if (!best_move) {
-        console.log("Mated");
-        msg = "投了";
+    if (game_end) {
+        // 初期局面を設定
+        game = new Game();
+        msg = "対局開始前";
+        game_end = false;
     } else {
-        let move_str = game.GetMoveString(best_move, true);
-        console.log(`Move: ${move_str}`);
-        msg = `${game.game_ply} ${move_str}`;
-        game.MoveOrDrop(best_move);
+        if (game.game_ply > 256) {
+            msg = "256手により引き分け";
+            game_end = true;
+        } else {
+            let best_move = await think.do_think(game.pos);
+            if (!best_move) {
+                console.log("Mated");
+                msg = "投了";
+                game_end = true;
+            } else {
+                let move_str = game.GetMoveString(best_move, true);
+                console.log(`Move: ${move_str}`);
+                msg = `${game.game_ply} ${move_str}`;
+                game.MoveOrDrop(best_move);
+            }
+        }
     }
     document.getElementById("last_move").innerText = msg;
     console.log(game.pos.toCSAString());
     console.log(`Check: ${game.pos.isCheck()}`);
     updateBoard(game);
+
+    in_step = false;
+}
+
+async function step_move() {
+
 }
 
 function initBoard() {
@@ -96,6 +123,6 @@ function updateBoard(game: Game) {
 
 window.onload = () => {
     initBoard();
-    updateBoard(game);
-    document.getElementById("next").onclick = next;
+    setImmediate(step);
+    setInterval(step, 2000);
 }
