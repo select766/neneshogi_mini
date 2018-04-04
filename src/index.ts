@@ -4,13 +4,15 @@ import { KifuTool, Zenkakusuji, Kansuji, PieceKindKifuName, PieceKindBoardName }
 import { Game } from "./game";
 let think = new Think();
 think.softmax_temperature = 1.0;
-think.load();
 
 let board_cells;
 let hand_cells;
 let game: Game;
 let in_step: boolean = false;
 let game_end = true;
+let pause = false;
+let interval_timer;
+let step_interval = 500;
 async function step() {
     if (in_step) {
         console.warn("called step while performing last step");
@@ -46,6 +48,14 @@ async function step() {
     console.log(game.pos.toCSAString());
     console.log(`Check: ${game.pos.isCheck()}`);
     updateBoard(game);
+
+    if (game_end) {
+        if (!(<HTMLInputElement>document.getElementById("continuous_game")).checked) {
+            // 連続対局しない
+            console.log("Pause by game end");
+            togglePause();
+        }
+    }
 
     in_step = false;
 }
@@ -121,8 +131,34 @@ function updateBoard(game: Game) {
     });
 }
 
-window.onload = () => {
+function togglePause() {
+    console.log("pause pressed");
+    let pause_button = document.getElementById("pause");
+    if (pause) {
+        // 再開
+        pause_button.innerText = "一時停止";
+        interval_timer = setInterval(step, step_interval);
+    } else {
+        // 一時停止
+        pause_button.innerText = "再開";
+        if (interval_timer) {
+            clearInterval(interval_timer);
+            interval_timer = null;
+        }
+    }
+    pause = !pause;
+}
+
+async function init() {
+    document.getElementById("last_move").innerText = "モデルロード中";
     initBoard();
+    updateBoard(new Game()); //ダミーの初期配置表示
+    await think.load();
+    document.getElementById("pause").onclick = togglePause;
     setImmediate(step);
-    setInterval(step, 2000);
+    interval_timer = setInterval(step, step_interval);
+}
+
+window.onload = () => {
+    init();
 }
