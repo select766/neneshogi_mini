@@ -13,7 +13,7 @@ let in_step: boolean = false;
 let game_end = true;
 let pause = false;
 let interval_timer;
-let step_interval = 500;
+let step_interval = 1000;
 async function step() {
     if (in_step) {
         console.warn("called step while performing last step");
