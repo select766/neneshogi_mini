@@ -3,5 +3,6 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/model_convert/eigen" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/src/Shogi.js" vcs="Git" />
   </component>
 </project>
